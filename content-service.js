@@ -3,11 +3,11 @@ const { parse } = require("path"); // Path module
 
 // using pool function from pg library to connect with postgresql DB
 const { Pool } = require("pg");
+require("dotenv").config();
 
 // Create a pool object to connect to the database
 const pool = new Pool({
-  connectionString:
-    "postgresql://neondb_owner:2PZkNQ8HXJCa@ep-rapid-fire-a51ospt2-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require",
+  connectionString: process.env.DB_URL,
   ssl: { rejectUnauthorized: false },
 });
 
@@ -53,13 +53,6 @@ module.exports.getAllArticles = () => {
     .catch((err) => Promise.reject(err || "Result not found in Database"));
 };
 
-// module.exports.getAllArticles = async function () {
-//   const result = await pool.query(
-//     "SELECT * FROM articles ORDER BY articledate DESC"
-//   );
-//   return result.rows;
-// };
-
 // Function define to query DB to get categories
 module.exports.getCategories = () => {
   return pool
@@ -78,20 +71,13 @@ module.exports.getCategoryName = (categoryId) => {
         err || `Result not found in Database for categoryId: ${categoryId}`
       )
     );
-
-  // const category = categories.find((cat) => cat.Id === categoryId);
-  // return category ? category.name : "Unknown";
 };
 // Add new Article to the database
 module.exports.addArticle = (articleData) => {
   // Step 0: Data validation to check we have all parameters
-  if (
-    !articleData.title ||
-    !articleData.articleDate ||
-    !articleData.category ||
-    !articleData.content ||
-    !articleData.published
-  ) {
+  articleData.articleDate = new Date();
+
+  if (!articleData.title || !articleData.category || !articleData.content) {
     return Promise.reject("Missing required fields");
   }
 
@@ -104,7 +90,7 @@ module.exports.addArticle = (articleData) => {
     articleData.articleDate,
     articleData.category,
     articleData.content,
-    articleData.published,
+    articleData.published || false,
   ];
 
   //Step 3: Execute query
@@ -117,13 +103,6 @@ module.exports.addArticle = (articleData) => {
         err || "Error while inserting into database. Contact administration"
       )
     );
-
-  // return new Promise((resolve, reject) => {
-  //   articleData.published = articleData.published ? true : false;
-  //   articleData.Id = articles.length + 1; // Set ID to the current length + 1
-  //   articles.push(articleData);
-  //   resolve(articleData);
-  // });
 };
 
 module.exports.updateArticle = (articleId, articleData) => {
@@ -145,12 +124,11 @@ module.exports.updateArticle = (articleId, articleData) => {
   //   .catch((err) => Promise.reject(err || "Error while fetching category"));
 
   // Step 1: Create query
-  const query = `UPDATE articles SET title = $1, articleDate = $2, category = $3, content = $4, author = $5, published = $6 WHERE id = $7 RETURNING *`;
+  const query = `UPDATE articles SET title = $1, category = $2, content = $3, author = $4, published = $5 WHERE id = $6 RETURNING *`;
 
   // Step 2: Create values
   const values = [
     articleData.title,
-    articleData.articleDate,
     articleData.category,
     articleData.content,
     articleData.author,
@@ -167,17 +145,6 @@ module.exports.updateArticle = (articleId, articleData) => {
         err || "Error while updating into database. Contact administration"
       )
     );
-
-  // return new Promise((resolve, reject) => {
-  //   articleData.published = articleData.published ? true : false;
-  //   const index = articles.findIndex((article) => article.Id === articleId);
-  //   if (index >= 0) {
-  //     articles[index] = { ...articleData, Id: articleId };
-  //     resolve(articles[index]);
-  //   } else {
-  //     reject("Article not found");
-  //   }
-  // });
 };
 
 // Function to get articles by category and include the category name
@@ -190,22 +157,6 @@ module.exports.getArticlesByCategory = (categoryId) => {
         err || `Result not found in Database for categoryId: ${categoryId}`
       )
     );
-  // return new Promise((resolve, reject) => {
-
-  //   const filteredArticles = articles.filter(
-  //     (article) => article.category === parseInt(categoryId)
-  //   );
-  //   if (filteredArticles.length > 0) {
-  //     // Add category name to each article
-  //     const articlesWithCategoryName = filteredArticles.map((article) => ({
-  //       ...article,
-  //       categoryName: getCategoryName(article.category), // Add category name
-  //     }));
-  //     resolve(articlesWithCategoryName);
-  //   } else {
-  //     reject("No results found");
-  //   }
-  // });
 };
 
 // Function to get articles by minimum date and add category name
@@ -218,24 +169,6 @@ module.exports.getArticlesByMinDate = (minDateStr) => {
         err || `Result not found in Database for minDate: ${minDateStr}`
       )
     );
-
-  // return new Promise((resolve, reject) => {
-  //   const minDate = new Date(minDateStr); // Convert the string to a Date object
-  //   const filteredArticles = articles.filter(
-  //     (article) => new Date(article.articleDate) >= minDate
-  //   );
-
-  //   if (filteredArticles.length > 0) {
-  //     // Add category name to each filtered article
-  //     const articlesWithCategoryName = filteredArticles.map((article) => ({
-  //       ...article,
-  //       categoryName: getCategoryName(article.category), // Add category name
-  //     }));
-  //     resolve(articlesWithCategoryName);
-  //   } else {
-  //     reject("No results found");
-  //   }
-  // });
 };
 
 // Function to get article by ID from database
@@ -247,11 +180,6 @@ module.exports.getArticleById = (Id) => {
     .catch((err) =>
       Promise.reject(err || `The id ${Id} is not found in the database`)
     );
-  // return new Promise((resolve, reject) => {
-  //   const foundArticle = articles.find((article) => article.Id == parseInt(Id));
-  //   if (foundArticle) resolve(foundArticle);
-  //   else reject("no result returned");
-  // });
 };
 
 // Fetch article by ID

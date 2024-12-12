@@ -32,6 +32,7 @@
 
     <!-- Content Area -->
     <main class="container my-4">
+      <!-- use the _method for method overwrite -->
       <form action="/articles/edit/<%= article.id %>" method="POST">
         <input type="hidden" name="_method" value="PUT">
         

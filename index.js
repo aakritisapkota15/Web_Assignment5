@@ -7,12 +7,12 @@ const cloudinary = require("cloudinary").v2;
 
 const streamifier = require("streamifier");
 
-const methodOverride = require("method-override");
+require("dotenv").config();
 
 cloudinary.config({
-  cloud_name: "dxtl3es7g",
-  api_key: "597463314459762",
-  api_secret: "DWfO2N6Ngo15O-hKsRk44o8IxQE",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
   secure: true,
 });
 
@@ -27,9 +27,6 @@ const contentService = require("./content-service");
 // Create an Express application instance
 const app = express();
 
-// overwride the method  with _method query of form
-app.use(methodOverride("_method"));
-
 // handle form data
 app.use(express.urlencoded({ extended: true }));
 
@@ -39,23 +36,20 @@ app.set("view engine", "ejs");
 // Set the views folder for EJS templates
 app.set("views", path.join(__dirname, "views"));
 
-// Set the HTTP port to an environment variable or default to 3838
-const HTTP_PORT = process.env.PORT || 3838;
+const HTTP_PORT = process.env.PORT || 3000;
 
-// Serve static files from the "public" directory (e.g., CSS, JS files, images)
 app.use(express.static("public"));
 
-// Route for the root path, redirecting to the "/about" page
+// redirect to about page
 app.get("/", (req, res) => {
   res.redirect("/about");
 });
 
-// Route for the "/about" page, serving the "about.html" file
+// Route for about
 app.get("/about", (req, res) => {
   res.render("about");
 });
 
-// Route for the "/categories" endpoint, returning categories in JSON format
 app.get("/categories", (req, res) => {
   contentService
     .getCategories()
@@ -238,6 +232,7 @@ app.post("/articles/add", upload.single("featureImage"), (req, res) => {
     console.log(req.body);
 
     // Call content-service to add the article
+    console.log("Article Data:", articleData);
     contentService
       .addArticle(articleData)
       .then(() => res.redirect("/articles")) // Redirect to articles page on success
