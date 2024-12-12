@@ -1,91 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HNN - Harry News Network</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/css/main.css" rel="stylesheet">
-</head>
-<body>
-
-  <!-- Header with Navigation -->
-  <header class="bg-primary text-white p-3">
-    <div class="container">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aakriti Sapkota</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="/css/main.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Header with Navigation -->
+    <header class="bg-primary text-white p-3">
+      <div class="container">
         <nav class="nav justify-content-center">
-            <a class="nav-link text-white" href="/">Home</a>
-            <a class="nav-link text-white" href="/about">About</a>
-            <a class="nav-link text-white" href="/articles">Articles</a>
-            <a class="nav-link text-white" href="/categories">Categories</a>
-            <a class="nav-link text-white" href="/articles/add">Add Article</a>
-          </nav>
-    </div>
-  </header>
-
-  <!-- Content Area -->
-  <main class="container my-4">
-    <div class="content p-4 bg-light">
-      <h2>Add Article</h2>
-      <form action="/articles/add" method="POST" enctype="multipart/form-data">
-        <!-- Title -->
-        <div class="mb-3">
-          <label for="title" class="form-label">Article Title</label>
-          <input type="text" id="title" name="title" class="form-control" placeholder="Enter article title" required>
-      </div>     
-      
-      <!-- Author -->
-      <div class="mb-3">
-          <label for="title" class="form-label">Author</label>
-          <input type="text" id="author" name="author" class="form-control" placeholder="Enter author full name" required>
+          <a class="nav-link text-white" href="/">Home</a>
+          <a class="nav-link text-white" href="/about">About</a>
+          <a class="nav-link text-white" href="/articles">Articles</a>
+          <a class="nav-link text-white" href="/categories">Categories</a>
+          <a class="nav-link text-white" href="/articles/add">Add Article</a>
+        </nav>
       </div>
+    </header>
 
-        <!-- Content -->
-        <div class="mb-3">
+    <!-- Content Area -->
+    <main class="container my-4">
+      <div class="content p-4 bg-light">
+        <h2>Add Article</h2>
+        <form
+          action="/articles/add"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <!-- Title -->
+          <div class="mb-3">
+            <label for="title" class="form-label">Article Title</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              class="form-control"
+              placeholder="Enter article title"
+              required
+            />
+          </div>
+
+          <!-- Author -->
+          <div class="mb-3">
+            <label for="title" class="form-label">Author</label>
+            <input
+              type="text"
+              id="author"
+              name="author"
+              class="form-control"
+              placeholder="Enter author full name"
+              required
+            />
+          </div>
+
+          <!-- Content -->
+          <div class="mb-3">
             <label for="content" class="form-label">Article Content</label>
-            <textarea id="content" name="content" class="form-control" rows="5" placeholder="Write your article content here..." required></textarea>
-        </div>
+            <textarea
+              id="content"
+              name="content"
+              class="form-control"
+              rows="5"
+              placeholder="Write your article content here..."
+              required
+            ></textarea>
+          </div>
 
-        <!-- Category -->
-        <div class="mb-3">
+          <!-- Category -->
+          <div class="mb-3">
             <label for="category" class="form-label">Category</label>
             <select class="form-control" name="category" id="category">
-
               <% categories.forEach((category) => { %>
-                <option value="<%= category.Id %>"><%= category.name %></option>
+              <option value="<%= category.Id %>"><%= category.name %></option>
               <% }); %>
             </select>
-        </div>
+          </div>
 
-        <!-- Publish -->
-        <div class="mb-3 form-check">
-            <input type="checkbox" id="published" name="published" class="form-check-input">
-            <label for="published" class="form-check-label">Publish this article</label>
-        </div>
+          <!-- Publish -->
+          <div class="mb-3 form-check">
+            <input
+              type="checkbox"
+              id="published"
+              name="published"
+              class="form-check-input"
+            />
+            <label for="published" class="form-check-label"
+              >Publish this article</label
+            >
+          </div>
 
-        <!-- Image Upload -->
-        <div class="mb-3">
+          <!-- Image Upload -->
+          <div class="mb-3">
             <label for="featureImage" class="form-label">Featured Image</label>
-            <input type="file" id="featureImage" name="featureImage" class="form-control" accept="image/*">
-        </div>
+            <input
+              type="file"
+              id="featureImage"
+              name="featureImage"
+              class="form-control"
+              accept="image/*"
+            />
+          </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary">Add Article</button>
-    </form>
-    </div>
-  </main>
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary">Add Article</button>
+        </form>
+      </div>
+    </main>
 
-  <!-- Footer -->
-  <footer class="bg-dark text-white text-center py-3">
-    <div class="container">
-      <p>© 2024 Harry Scanlan, 1234567, <a href="mailto:harry.scanlan@senecapolytechnic.ca">harry.scanlan@senecapolytechnic.ca</a>. All rights reserved.</p>
-    </div>
-  </footer>
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+      <div class="container">
+        <p>Aakriti Sapkota</p>
+      </div>
+    </footer>
 
-  <!-- Bootstrap JS and dependencies -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-</body>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
 </html>

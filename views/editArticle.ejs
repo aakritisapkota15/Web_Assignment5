@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aakriti Sapktoa</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="/css/main.css" rel="stylesheet" />
+    <style>
+      .container{
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header with Navigation -->
+    <header class="bg-primary text-white p-3">
+      <div class="container">
+        <nav class="nav justify-content-center">
+          <a class="nav-link text-white" href="/">Home</a>
+          <a class="nav-link text-white" href="/about">About</a>
+          <a class="nav-link text-white" href="/articles">Articles</a>
+          <a class="nav-link text-white" href="/categories">Categories</a>
+          <a class="nav-link text-white" href="/articles/add">Add Article</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="container my-4">
+      <form action="/articles/edit/<%= article.id %>" method="POST">
+        <input type="hidden" name="_method" value="PUT">
+        
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" value="<%= article.title %>" required>
+        
+          <label for="content">Content</label>
+          <textarea id="content" name="content" required><%= article.content %></textarea>
+        
+          <label for="author">Author</label>
+          <input type="text" id="author" name="author" value="<%= article.author %>" required>
+        
+          <label for="category">Category</label>
+          <select id="category" name="category" required>
+            <% categories.forEach((category) => { %>
+              <option value="<%= category.id %>" <%= category.id === article.category ? "selected" : "" %>>
+                <%= category.name %>
+              </option>
+            <% }); %>
+          </select>
+        
+          <label for="published">Published</label>
+          <input type="checkbox" id="published" name="published" <%= article.published ? "checked" : "" %>>
+        
+          <button type="submit">Update Article</button>
+        </form>
+</main>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3">
+  <div class="container">
+    <p>&copy; 2024 Aakriti Sapkota</p>
+  </div>
+</footer>
+
+
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

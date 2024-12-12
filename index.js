@@ -7,10 +7,12 @@ const cloudinary = require("cloudinary").v2;
 
 const streamifier = require("streamifier");
 
+const methodOverride = require("method-override");
+
 cloudinary.config({
-  cloud_name: "dexmgropy",
-  api_key: "269573191974962",
-  api_secret: "Ef-1jBn7kdls2-dfzmjPPFiCyhU",
+  cloud_name: "dxtl3es7g",
+  api_key: "597463314459762",
+  api_secret: "DWfO2N6Ngo15O-hKsRk44o8IxQE",
   secure: true,
 });
 
@@ -19,11 +21,17 @@ const upload = multer();
 // Import the 'path' module to handle file paths
 const path = require("path");
 
-// Import the custom data handling module, assumed to manage categories and articles
+// Data handeling functions
 const contentService = require("./content-service");
 
 // Create an Express application instance
 const app = express();
+
+// overwride the method  with _method query of form
+app.use(methodOverride("_method"));
+
+// handle form data
+app.use(express.urlencoded({ extended: true }));
 
 // Set the view engine to EJS
 app.set("view engine", "ejs");
@@ -49,9 +57,17 @@ app.get("/about", (req, res) => {
 
 // Route for the "/categories" endpoint, returning categories in JSON format
 app.get("/categories", (req, res) => {
-  contentService.getCategories().then((data) => {
-    res.render("categories", { categories: data });
-  });
+  contentService
+    .getCategories()
+    .then((data) => {
+      console.log(data);
+      //res.status(200).json(data);
+      res.render("categories", { categories: data });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(404).json({ message: err });
+    });
 });
 
 app.get("/articles", (req, res, next) => {
@@ -80,6 +96,7 @@ app.get("/articles", (req, res, next) => {
     contentService
       .getAllArticles()
       .then((articles) => {
+        //res.json("You have reached the articles endpoint");
         //res.json(articles);
         res.render("articles", { articles: articles });
       })
@@ -102,6 +119,57 @@ app.get("/article/:Id", (req, res) => {
     });
 });
 
+// Adding route to add articles
+app.get("/articles/edit/:id", (req, res) => {
+  const articleId = req.params.id;
+  //console.log("I am reached");
+  // Step 1: Get article by ID
+  contentService
+    .getArticleById(articleId)
+    .then((article) => {
+      //return res.status(200).json(article);
+      //step 2: get Categories
+      contentService
+        .getCategories()
+        .then((categories) => {
+          //return res.status(200).json(article);
+          //console.log(categories);
+          return res.render("editArticle", { article, categories });
+        })
+        .catch((err) => {
+          res.status(404).json({ message: err });
+        });
+    })
+    .catch((err) => {
+      res.status(404).json({ message: err });
+    });
+});
+
+app.post("/articles/edit/:id", (req, res) => {
+  const articleId = req.params.id;
+  // Build the article object
+
+  console.log(req.body.title);
+
+  const articleData = {
+    title: req.body.title,
+    content: req.body.content,
+    author: req.body.author,
+    published: req.body.published,
+    category: req.body.category,
+    featureImage: req.body.featureImage,
+  };
+
+  console.log("Article Data:", articleData);
+  // Call content-service to update the article
+  contentService
+    .updateArticle(articleId, articleData)
+    .then(() => res.redirect("/articles")) // Redirect to articles page on success
+    .catch((err) =>
+      res.status(500).json({ message: "Failed to update article", error: err })
+    );
+});
+
 app.get("/articles/add", (req, res) => {
   contentService
     .getCategories()
@@ -111,6 +179,17 @@ app.get("/articles/add", (req, res) => {
     .catch((err) => {
       res.status(404).json({ message: err });
     });
+});
+
+// due to html form not supporting put and delete method we need to use post method
+// Overriding the method in the form
+app.post("/articles/delete/:id", (req, res) => {
+  contentService
+    .deleteArticle(req.params.id)
+    .then(() => res.redirect("/articles"))
+    .catch((err) =>
+      res.status(500).json({ message: "Failed to delete article", error: err })
+    );
 });
 
 app.post("/articles/add", upload.single("featureImage"), (req, res) => {
@@ -174,8 +253,10 @@ app.post("/articles/add", upload.single("featureImage"), (req, res) => {
 //   console.log("server listening @ http://localhost:" + HTTP_PORT);
 // });
 
-app.listen(HTTP_PORT, () => {
-  console.log(`Server running on http://localhost:${HTTP_PORT}`);
+contentService.initialize().then(() => {
+  app.listen(HTTP_PORT, () => {
+    console.log(`Server running on http://localhost:${HTTP_PORT}`);
+  });
 });
 
 // Export the Express app instance (useful for testing or external usage)
